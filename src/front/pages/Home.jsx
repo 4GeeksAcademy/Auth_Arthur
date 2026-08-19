@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { login } from "../../services/apiServices"
@@ -12,8 +12,14 @@ export const Home = () => {
 	const navigate = useNavigate()
 	const { store, dispatch } = useGlobalReducer()
 
+	useEffect(() => {
+		if (sessionStorage.getItem("token")) {
+			navigate("/private");
+		}
+	}, []);
+
 	const handleSubmit = async (e) => {
-		e.prevent.default();
+		e.preventDefault();
 		setError(null);
 		const result = await login(email, password);
 		if (result.ok) {
@@ -68,15 +74,15 @@ export const Home = () => {
 								</div>
 							</div>
 						</div>
-							<div className="card-footer d-flex flex-column">
-								<button type="submit" className="btn btn-primary my-3">Iniciar Sesión</button>
-								<label>¿Aún no tienes cuenta? <Link to="/signup">Regístrate aquí</Link></label>
-							</div>
+						<div className="card-footer d-flex flex-column">
+							<button type="submit" className="btn btn-primary my-3">Iniciar Sesión</button>
+							<label>¿Aún no tienes cuenta? <Link to="/signup">Regístrate aquí</Link></label>
+						</div>
 					</form>
 				</div>
 			</div>
 		</div >
 	);
-}; 
+};
 
 export default Home
