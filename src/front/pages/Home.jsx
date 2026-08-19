@@ -1,52 +1,82 @@
-import React, { useEffect } from "react"
-import rigoImageUrl from "../assets/img/rigo-baby.jpg";
+import React, { useState } from "react"
+import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { login } from "../../services/apiServices"
 
 export const Home = () => {
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [error, setError] = useState(null);
+	const [show, setShow] = useState(false);
 
+	const navigate = useNavigate()
 	const { store, dispatch } = useGlobalReducer()
 
-	const loadMessage = async () => {
-		try {
-			const backendUrl = import.meta.env.VITE_BACKEND_URL
-
-			if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
-
-			const response = await fetch(backendUrl + "/api/hello")
-			const data = await response.json()
-
-			if (response.ok) dispatch({ type: "set_hello", payload: data.message })
-
-			return data
-
-		} catch (error) {
-			if (error.message) throw new Error(
-				`Could not fetch the message from the backend.
-				Please check if the backend is running and the backend port is public.`
-			);
+	const handleSubmit = async (e) => {
+		e.prevent.default();
+		setError(null);
+		const result = await login(email, password);
+		if (result.ok) {
+			dispatch({
+				type: "set_auth",
+				payload: {
+					token: result.data.token,
+					user: result.data.user
+				}
+			})
+			navigate("/private")
+		} else {
+			setError(result.data.error || "Algo ha salido mal")
 		}
-
 	}
 
-	useEffect(() => {
-		loadMessage()
-	}, [])
-
 	return (
-		<div className="text-center mt-5">
-			<h1 className="display-4">Hello Rigo!!</h1>
-			<p className="lead">
-				<img src={rigoImageUrl} className="img-fluid rounded-circle mb-3" alt="Rigo Baby" />
-			</p>
-			<div className="alert alert-info">
-				{store.message ? (
-					<span>{store.message}</span>
-				) : (
-					<span className="text-danger">
-						Loading message from the backend (make sure your python 🐍 backend is running)...
-					</span>
-				)}
+		<div className="row d-flex justify-content-center">
+			<div className="col-auto d-flex align-items-center">
+				<div className="card m-5 rounded">
+					<div className="card-header mb-2  pt-2">
+						<h4 className="card-title">Iniciar Sesión</h4>
+					</div>
+					<form onSubmit={handleSubmit}>
+						<div className="card-body">
+							<div className="mb-3">
+								<label className="form-label">Email</label>
+								<input
+									type="email"
+									className="form-control"
+									value={email} onChange={(e) => setEmail(e.target.value)}
+									required
+									placeholder="E-mail"
+								/>
+							</div>
+							<div className="mb-3">
+								<label className="form-label">Contraseña</label>
+								<div className="d-flex">
+									<input
+										type={show ? "text" : "password"}
+										className="form-control"
+										placeholder="********"
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
+									/>
+									<button
+										type="button"
+										class="btn"
+										onClick={() => setShow(!show)}>
+										{show ? <i class="fa-regular fa-eye-slash"></i> : <i class="fa-solid fa-eye text-black"></i>}
+									</button>
+								</div>
+							</div>
+							<div className="card-footer d-flex flex-column">
+								<button type="submit" className="btn btn-primary my-3">Iniciar Sesión</button>
+								<label for="">¿Aún no tienes cuenta? <Link to="signup">Regístrate aquí</Link></label>
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
-		</div>
+		</div >
 	);
 }; 
+
+export default Home
