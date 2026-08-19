@@ -61,17 +61,17 @@ export const Home = () => {
 									/>
 									<button
 										type="button"
-										class="btn"
+										className="btn"
 										onClick={() => setShow(!show)}>
-										{show ? <i class="fa-regular fa-eye-slash"></i> : <i class="fa-solid fa-eye text-black"></i>}
+										{show ? <i className="fa-regular fa-eye-slash"></i> : <i className="fa-solid fa-eye text-black"></i>}
 									</button>
 								</div>
 							</div>
+						</div>
 							<div className="card-footer d-flex flex-column">
 								<button type="submit" className="btn btn-primary my-3">Iniciar Sesión</button>
-								<label for="">¿Aún no tienes cuenta? <Link to="signup">Regístrate aquí</Link></label>
+								<label>¿Aún no tienes cuenta? <Link to="/signup">Regístrate aquí</Link></label>
 							</div>
-						</div>
 					</form>
 				</div>
 			</div>
