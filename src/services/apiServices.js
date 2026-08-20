@@ -1,4 +1,9 @@
-const BASE_URL = import.meta.env.VITE_BACKEND_URL || "";
+const BASE_URL = "https://miniature-eureka-7794qr4jxqgjhx7rx-3001.app.github.dev";
+
+// de verdad espero haberlo hecho bien, esta parte 
+// en la que se conecta el backend y el frontend 
+// me ha costado bastante 
+
 
 export const signup = async (email, password) => {
   try {
